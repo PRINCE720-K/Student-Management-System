@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow-lg border-0 rounded-4 p-4">
+
+    <!-- 🔥 HEADER -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">
+            <i class="bi bi-file-earmark-text text-primary"></i> History Report
+        </h2>
+        <p class="text-muted">
+            Academic Year: {{data.year if data else ''}}
+        </p>
+    </div>
+
+{% if data %}
+
+    <!-- 👤 STUDENT INFO -->
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded shadow-sm">
+                <h5><i class="bi bi-person"></i> {{data.student[3]}}</h5>
+                <p class="mb-1"><b>Roll:</b> {{data.student[2]}}</p>
+                <p class="mb-0"><b>Class:</b> {{data.student[4]}}</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 text-center">
+            <div class="p-3 rounded shadow-sm 
+                {% if data.result == 'PASS' %}bg-success text-white{% else %}bg-danger text-white{% endif %}">
+                <h4 class="mb-0">
+                    {{data.result}}
+                </h4>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 📊 MARKS TABLE -->
+    <div class="table-responsive">
+    <table class="table table-hover table-bordered text-center align-middle">
+
+        <thead class="table-dark">
+            <tr>
+                <th>📘 Subject</th>
+                <th>📝 Marks</th>
+                <th>📊 Max</th>
+                <th>📈 %</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for m in data.marks %}
+        <tr>
+            <td>{{m[0]}}</td>
+            <td>{{m[1]}}</td>
+            <td>{{m[2]}}</td>
+            <td>
+                {% if m[2] > 0 %}
+                    {{ ((m[1]/m[2])*100) | round(1) }}%
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    </div>
+
+    <!-- 📊 SUMMARY -->
+    <div class="row mt-4 text-center">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3">
+                <h6>Total</h6>
+                <h4>{{data.total}}</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3">
+                <h6>Percentage</h6>
+                <h4>{{data.percentage}}%</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3">
+                <h6>Attendance</h6>
+                <h4>{{data.attendance}}%</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3">
+                <h6>Status</h6>
+                <h4 class="{% if data.result == 'PASS' %}text-success{% else %}text-danger{% endif %}">
+                    {{data.result}}
+                </h4>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 📈 PROGRESS BARS -->
+    <div class="mt-4">
+
+        <h6>Performance</h6>
+
+        <div class="mb-2">Percentage</div>
+        <div class="progress mb-3">
+            <div class="progress-bar 
+                {% if data.percentage >= 40 %}bg-success{% else %}bg-danger{% endif %}"
+                style="width: {{data.percentage}}%">
+                {{data.percentage}}%
+            </div>
+        </div>
+
+        <div class="mb-2">Attendance</div>
+        <div class="progress">
+            <div class="progress-bar bg-info"
+                 style="width: {{data.attendance}}%">
+                {{data.attendance}}%
+            </div>
+        </div>
+
+    </div>
+
+{% else %}
+
+    <!-- ❌ NO DATA -->
+    <div class="text-center mt-4">
+        <h4 class="text-danger">❌ No Data Found</h4>
+    </div>
+
+{% endif %}
+
+    <!-- 🔙 BACK BUTTON -->
+    <div class="text-center mt-4">
+        <a href="/history" class="btn btn-dark px-4">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

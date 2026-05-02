@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+<!-- 🔥 HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold">
+        <i class="bi bi-pencil-square text-warning"></i> Update Attendance
+    </h3>
+
+    <a href="/attendance" class="btn btn-outline-secondary">
+        ⬅ Back
+    </a>
+</div>
+
+<!-- 🔥 CARD -->
+<div class="card shadow-lg border-0 rounded-4">
+
+<!-- HEADER -->
+<div class="card-header bg-warning text-dark rounded-top-4">
+    <h5 class="mb-0">📅 Attendance Details</h5>
+</div>
+
+<!-- BODY -->
+<div class="card-body p-4">
+
+<form method="POST">
+
+    <!-- 📊 CURRENT INFO (optional but useful) -->
+    <div class="mb-4">
+        <div class="alert alert-info">
+            <strong>Current Attendance:</strong> {{data[3]}}%
+        </div>
+    </div>
+
+    <!-- ✏️ INPUT -->
+    <div class="mb-4">
+        <label class="form-label fw-semibold">
+            Enter New Attendance (%)
+        </label>
+
+        <div class="input-group">
+            <input type="number"
+                   name="attendance"
+                   id="attendanceInput"
+                   class="form-control form-control-lg shadow-sm"
+                   value="{{data[3]}}"
+                   min="0"
+                   max="100"
+                   required>
+
+            <span class="input-group-text">%</span>
+        </div>
+
+        <!-- 🔥 VALIDATION TEXT -->
+        <small id="warnText" class="text-danger"></small>
+    </div>
+
+    <!-- 🎯 PROGRESS BAR -->
+    <div class="mb-4">
+        <label class="form-label">Preview</label>
+        <div class="progress" style="height:20px;">
+            <div id="progressBar"
+                 class="progress-bar bg-success"
+                 style="width: {{data[3]}}%;">
+                 {{data[3]}}%
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔥 BUTTON -->
+    <button class="btn btn-success w-100 shadow">
+        💾 Update Attendance
+    </button>
+
+</form>
+
+</div>
+</div>
+
+</div>
+
+<!-- 🔥 SCRIPT -->
+<script>
+
+// 🎯 LIVE PREVIEW + VALIDATION
+let input = document.getElementById("attendanceInput");
+let bar = document.getElementById("progressBar");
+let warn = document.getElementById("warnText");
+
+input.addEventListener("input", function(){
+    let val = parseInt(this.value) || 0;
+
+    // LIMIT CHECK
+    if(val < 0 || val > 100){
+        warn.innerText = "Attendance must be between 0 and 100";
+    } else {
+        warn.innerText = "";
+    }
+
+    // UPDATE BAR
+    bar.style.width = val + "%";
+    bar.innerText = val + "%";
+
+    // COLOR CHANGE
+    if(val < 40){
+        bar.className = "progress-bar bg-danger";
+    } else if(val < 75){
+        bar.className = "progress-bar bg-warning";
+    } else {
+        bar.className = "progress-bar bg-success";
+    }
+});
+
+</script>
+
+{% endblock %}

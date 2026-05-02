@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+<!-- 🔥 HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">
+        <i class="bi bi-person-gear text-warning"></i> Update Student
+    </h2>
+
+    <a href="/students" class="btn btn-outline-secondary">
+        ⬅ Back
+    </a>
+</div>
+
+<!-- 🔥 CARD -->
+<div class="card shadow-lg border-0 rounded-4">
+
+<!-- HEADER -->
+<div class="card-header bg-warning text-dark rounded-top-4">
+    <h5 class="mb-0">👤 Student Details</h5>
+</div>
+
+<!-- BODY -->
+<div class="card-body p-4">
+
+<form method="POST" enctype="multipart/form-data">
+
+    <!-- 👤 CURRENT INFO -->
+    <div class="alert alert-info mb-4">
+        <strong>Current Name:</strong> {{data[1] if data else ''}}
+    </div>
+
+    <div class="row g-3">
+
+        <!-- NAME -->
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Student Name</label>
+            <input type="text"
+                   name="name"
+                   id="nameInput"
+                   class="form-control form-control-lg shadow-sm"
+                   value="{{data[1] if data else ''}}"
+                   required>
+        </div>
+
+        <!-- PHONE -->
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Phone</label>
+            <input type="tel"
+                   name="phone"
+                   class="form-control form-control-lg shadow-sm"
+                   value="{{data[3] if data else ''}}">
+        </div>
+
+        <!-- EMAIL -->
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Email</label>
+            <input type="email"
+                   name="email"
+                   class="form-control form-control-lg shadow-sm"
+                   value="{{data[4] if data else ''}}">
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Address</label>
+            <input type="text"
+                   name="address"
+                   class="form-control form-control-lg shadow-sm"
+                   value="{{data[5] if data else ''}}">
+        </div>
+
+        <!-- 📷 PHOTO -->
+        <div class="col-md-12">
+            <label class="form-label fw-semibold">Update Photo</label>
+            <input type="file" name="photo" class="form-control">
+        </div>
+
+    </div>
+
+    <!-- 🔍 LIVE PREVIEW -->
+    <div class="mt-4 text-center">
+        <h5>Preview</h5>
+        <div class="card p-3 shadow-sm">
+            <h4 id="previewName">{{data[1] if data else ''}}</h4>
+        </div>
+    </div>
+
+    <!-- 🔥 BUTTON -->
+    <button class="btn btn-success w-100 mt-4 shadow">
+        💾 Update Student
+    </button>
+
+</form>
+
+</div>
+</div>
+
+</div>
+
+<!-- 🔥 SCRIPT -->
+<script>
+
+// 🔍 LIVE NAME PREVIEW
+let input = document.getElementById("nameInput");
+let preview = document.getElementById("previewName");
+
+input.addEventListener("input", function(){
+    preview.innerText = this.value;
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<div class="container mt-4">
+
+<h2 class="mb-4">📝 Add Student Marks</h2>
+
+<div class="card p-4 shadow">
+
+<form method="POST">
+
+<!-- ROLL -->
+<input type="number" name="roll" class="form-control mb-3" placeholder="Enter Roll No" required>
+
+<!-- CLASS -->
+<select name="class" class="form-control mb-3" required>
+<option value="">Select Class</option>
+{% for cls in classes %}
+<option value="{{cls[0]}}">{{cls[0]}}</option>
+{% endfor %}
+</select>
+
+<!-- SUBJECT -->
+<select name="subject" class="form-control mb-3" required>
+<option value="">Select Subject</option>
+{% for sub in subjects %}
+<option value="{{sub[1]}}">{{sub[1]}}</option>
+{% endfor %}
+</select>
+
+<!-- MARKS -->
+<input type="number" name="marks" class="form-control mb-3" placeholder="Enter Marks" required>
+<input type="number" name="max_marks" class="form-control mb-3" placeholder="Enter Maximum Marks" required>
+<button class="btn btn-success w-100">➕ Add Marks</button>
+
+</form>
+
+</div>
+
+</div>
+
+{% endblock %}

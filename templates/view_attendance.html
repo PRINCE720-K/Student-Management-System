@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+<!-- 🔥 HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">📊 Attendance Management</h2>
+
+    <a href="/attendance" class="btn btn-success">
+        ➕ Add Attendance
+    </a>
+</div>
+
+<!-- 🔍 FILTER CARD -->
+<div class="card shadow-lg border-0 rounded-4 mb-4">
+<div class="card-body">
+
+<form method="GET" class="row g-3">
+
+    <div class="col-md-4">
+        <label class="fw-semibold">Class</label>
+        <input type="text" name="class"
+               value="{{request.args.get('class','')}}"
+               class="form-control"
+               placeholder="Enter Class">
+    </div>
+
+    <div class="col-md-4">
+        <label class="fw-semibold">Roll No</label>
+        <input type="number" name="roll"
+               value="{{request.args.get('roll','')}}"
+               class="form-control"
+               placeholder="Enter Roll No">
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-primary w-100">
+            🔍 Search
+        </button>
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+        <a href="/view_attendance" class="btn btn-secondary w-100">
+            Reset
+        </a>
+    </div>
+
+</form>
+
+</div>
+</div>
+
+<!-- 📋 TABLE CARD -->
+<div class="card shadow-lg border-0 rounded-4">
+
+<div class="card-header bg-dark text-white rounded-top-4 d-flex justify-content-between">
+    <h5 class="mb-0">📋 Attendance List</h5>
+    <span class="badge bg-info">{{data|length}} Records</span>
+</div>
+
+<div class="card-body p-0">
+
+<div class="table-responsive">
+
+<table class="table table-hover align-middle text-center mb-0">
+
+<thead class="table-dark">
+<tr>
+<th>Roll</th>
+<th>Name</th>
+<th>Class</th>
+<th>Month</th>
+<th>Attendance</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for d in data %}
+<tr>
+
+<td class="fw-bold">{{d[0]}}</td>
+<td>{{d[1]}}</td>
+<td><span class="badge bg-primary">{{d[2]}}</span></td>
+<td>{{d[3]}}</td>
+
+<!-- 🎯 ATTENDANCE -->
+<td>
+<div class="progress" style="height:18px;">
+    <div class="progress-bar
+        {% if d[4] < 40 %}bg-danger
+        {% elif d[4] < 75 %}bg-warning
+        {% else %}bg-success{% endif %}"
+        style="width: {{d[4]}}%;">
+        {{d[4]}}%
+    </div>
+</div>
+</td>
+
+<!-- STATUS -->
+<td>
+{% if d[4] < 40 %}
+<span class="badge bg-danger">Low</span>
+{% elif d[4] < 75 %}
+<span class="badge bg-warning text-dark">Average</span>
+{% else %}
+<span class="badge bg-success">Good</span>
+{% endif %}
+</td>
+
+<!-- ACTION -->
+<td>
+
+<a href="/update-attendance/{{d[5]}}"
+   class="btn btn-warning btn-sm">
+   ✏️
+</a>
+
+<a href="/delete-attendance/{{d[5]}}"
+   class="btn btn-danger btn-sm"
+   onclick="return confirm('Delete this record?')">
+   🗑
+</a>
+
+</td>
+
+</tr>
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% if not data %}
+<div class="text-center text-muted p-4">
+    ❌ No Attendance Data Found
+</div>
+{% endif %}
+
+</div>
+</div>
+
+</div>
+
+{% endblock %}

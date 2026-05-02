@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid mt-3">
+
+<!-- 🔥 HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold">👋 Welcome, {{session['user']}}</h3>
+        <p id="greeting" class="text-muted"></p>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <div class="bell">
+            🔔 <span class="badge bg-danger">3</span>
+        </div>
+        <h5 id="clock"></h5>
+    </div>
+</div>
+
+<!-- 🔥 QUICK ACTIONS -->
+<div class="row g-3 mb-4">
+
+<div class="col-md-3">
+<a href="/add" class="quick-card">➕ Add Student</a>
+</div>
+
+<div class="col-md-3">
+<a href="/add_marks" class="quick-card">📊 Add Marks</a>
+</div>
+
+<div class="col-md-3">
+<a href="/attendance" class="quick-card">📅 Attendance</a>
+</div>
+
+<div class="col-md-3">
+<a href="/student_report" class="quick-card">📄 Reports</a>
+</div>
+
+</div>
+
+<!-- 🔥 STATS -->
+<div class="row g-4 text-center">
+
+<div class="col-md-3">
+<div class="glass-card">
+<h6>Total Students</h6>
+<h2>{{total}}</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="glass-card success">
+<h6>Active</h6>
+<h2>{{active}}</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="glass-card primary">
+<h6>Passed</h6>
+<h2>{{passed}}</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="glass-card danger">
+<h6>Left</h6>
+<h2>{{left}}</h2>
+</div>
+</div>
+
+</div>
+
+<!-- 🏆 TOPPER -->
+<div class="glass-card topper mt-4 text-center">
+<h4>🏆 Topper Student</h4>
+
+{% if topper %}
+<h3>{{topper[0]}}</h3>
+<p>{{topper[1]}}</p>
+<div class="score">{{topper[2]|round(2)}}%</div>
+{% else %}
+<p>No Data</p>
+{% endif %}
+
+</div>
+
+<!-- 📊 CHARTS -->
+<div class="row mt-4">
+
+<div class="col-md-6">
+<div class="glass-card">
+<h5 class="text-center">Pass vs Fail</h5>
+<canvas id="resultChart"></canvas>
+</div>
+</div>
+
+<div class="col-md-6">
+<div class="glass-card text-center">
+<h5>Average Attendance</h5>
+<h1>{{avg_att}}%</h1>
+</div>
+</div>
+
+</div>
+
+<div class="row mt-4">
+
+<div class="col-md-6">
+<div class="glass-card">
+<h5 class="text-center">Monthly Attendance</h5>
+<canvas id="attendanceChart"></canvas>
+</div>
+</div>
+
+<div class="col-md-6">
+<div class="glass-card">
+<h5 class="text-center">Class Performance</h5>
+<canvas id="classChart"></canvas>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- 🔥 STYLE -->
+<style>
+
+body {
+    background: linear-gradient(135deg,#dfe9f3,#ffffff);
+}
+
+.glass-card{
+    padding:20px;
+    border-radius:20px;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.6);
+    box-shadow:0 8px 25px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.glass-card:hover{
+    transform:translateY(-6px);
+}
+
+.glass-card.success{background:rgba(0,184,148,0.2);}
+.glass-card.primary{background:rgba(9,132,227,0.2);}
+.glass-card.danger{background:rgba(214,48,49,0.2);}
+
+.topper{
+    background:linear-gradient(135deg,#ffeaa7,#fab1a0);
+}
+
+.score{
+    font-size:40px;
+    font-weight:bold;
+}
+
+.quick-card{
+    display:block;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+    text-decoration:none;
+    background:linear-gradient(135deg,#6c5ce7,#00cec9);
+    color:white;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.quick-card:hover{
+    transform:scale(1.05);
+}
+
+.bell{
+    font-size:20px;
+}
+
+#clock{
+    font-weight:bold;
+}
+
+</style>
+
+<!-- 🔥 JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+// CLOCK
+setInterval(()=>{
+    let now=new Date();
+    document.getElementById("clock").innerText=now.toLocaleTimeString();
+},1000);
+
+// GREETING
+let hour=new Date().getHours();
+let msg="Good Evening";
+if(hour<12) msg="Good Morning ☀️";
+else if(hour<18) msg="Good Afternoon 🌤";
+document.getElementById("greeting").innerText=msg;
+
+// ✅ SAFE DATA (FIX)
+const passCount = {{ pass_count | default(0) }};
+const failCount = {{ fail_count | default(0) }};
+
+const months = {{ months | default([]) | tojson }};
+const attValues = {{ att_values | default([]) | tojson }};
+
+const classes = {{ classes | default([]) | tojson }};
+const classPerf = {{ class_perf | default([]) | tojson }};
+
+// PASS FAIL
+new Chart(document.getElementById('resultChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Pass', 'Fail'],
+        datasets: [{
+            data: [passCount, failCount],
+            backgroundColor: ['#00b894', '#d63031']
+        }]
+    }
+});
+
+// MONTHLY
+new Chart(document.getElementById('attendanceChart'), {
+    type: 'line',
+    data: {
+        labels: months,
+        datasets: [{
+            data: attValues,
+            borderColor: '#0984e3',
+            fill:true,
+            tension:0.4
+        }]
+    }
+});
+
+// CLASS
+new Chart(document.getElementById('classChart'), {
+    type: 'bar',
+    data: {
+        labels: classes,
+        datasets: [{
+            data: classPerf,
+            backgroundColor: '#fdcb6e'
+        }]
+    }
+});
+
+</script>
+
+{% endblock %}

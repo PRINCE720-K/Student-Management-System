@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+<!-- 🔥 HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">👨‍🎓 Student Management</h2>
+</div>
+
+<!-- 🔍 FILTER BAR -->
+<div class="card shadow-sm p-3 mb-4 border-0">
+    <div class="row g-2">
+
+        <div class="col-md-4">
+            <select id="classFilter" class="form-select form-select-lg shadow-sm" onchange="filterClass()">
+                <option value="">🎯 Select Class</option>
+                {% for cls in students.keys() %}
+                <option value="{{cls}}">{{cls}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <input type="text" id="searchInput"
+                   class="form-control form-control-lg shadow-sm"
+                   placeholder="🔍 Search by Name / Roll"
+                   onkeyup="searchStudent()">
+        </div>
+
+    </div>
+</div>
+
+<!-- 🔥 CLASS DATA -->
+{% for cls, student_list in students.items() %}
+<div class="class-box" id="class-{{cls}}" style="display:none;">
+
+<div class="card shadow-lg border-0 mb-4">
+
+<div class="card-header bg-primary text-white d-flex justify-content-between">
+    <h5 class="mb-0">📘 Class: {{cls}}</h5>
+    <span class="badge bg-light text-dark">{{student_list|length}} Students</span>
+</div>
+
+<div class="card-body p-0">
+
+<div class="table-responsive">
+
+<table class="table table-hover align-middle mb-0 text-center">
+
+<thead class="table-dark">
+<tr>
+<th>Photo</th>
+<th>Roll</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Email</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for s in student_list %}
+<tr>
+
+<td>
+{% if s[6] %}
+<img src="/uploads/{{s[6]}}"
+     class="rounded-circle shadow"
+     style="width:50px;height:50px;object-fit:cover;">
+{% else %}
+<img src="https://via.placeholder.com/50"
+     class="rounded-circle">
+{% endif %}
+</td>
+
+<td class="fw-bold">{{s[0]}}</td>
+<td>{{s[1]}}</td>
+<td>{{s[3]}}</td>
+<td>{{s[4]}}</td>
+
+<td>
+
+<button class="btn btn-warning btn-sm"
+onclick="openEdit('{{s[0]}}','{{cls}}','{{s[1]}}','{{s[3]}}','{{s[4]}}','{{s[5]}}')">
+✏️
+</button>
+
+<a href="/delete/{{s[0]}}/{{cls}}/{{s[6]}}"
+   class="btn btn-danger btn-sm"
+   onclick="return confirm('Delete this student?')">
+🗑
+</a>
+
+{% if session['role']=='admin' %}
+<a href="/student/{{s[0]}}/{{cls}}" class="btn btn-info btn-sm">
+👁
+</a>
+{% endif %}
+
+</td>
+
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+{% endfor %}
+
+<!-- 🔥 EDIT MODAL -->
+<div class="modal fade" id="editModal">
+<div class="modal-dialog modal-lg">
+<div class="modal-content border-0 shadow-lg">
+
+<form method="POST" action="/update_full" enctype="multipart/form-data">
+
+<div class="modal-header bg-warning">
+<h5 class="fw-bold">✏️ Edit Student</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body">
+
+<div class="row g-3">
+
+<input type="hidden" name="roll" id="roll">
+<input type="hidden" name="class" id="class">
+
+<div class="col-md-6">
+<input type="text" name="name" id="name"
+class="form-control form-control-lg"
+placeholder="Name">
+</div>
+
+<div class="col-md-6">
+<input type="tel" name="phone" id="phone"
+class="form-control form-control-lg"
+placeholder="Phone">
+</div>
+
+<div class="col-md-6">
+<input type="email" name="email" id="email"
+class="form-control form-control-lg"
+placeholder="Email">
+</div>
+
+<div class="col-md-6">
+<input type="text" name="address" id="address"
+class="form-control form-control-lg"
+placeholder="Address">
+</div>
+
+<div class="col-md-12">
+<input type="file" name="photo" class="form-control">
+</div>
+
+</div>
+
+</div>
+
+<div class="modal-footer">
+<button class="btn btn-success px-4">💾 Update</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+// 🎯 FILTER CLASS
+function filterClass() {
+    let selected = document.getElementById("classFilter").value;
+
+    localStorage.setItem("selectedClass", selected);
+
+    document.querySelectorAll(".class-box").forEach(div => {
+        div.style.display = "none";
+    });
+
+    if (selected) {
+        document.getElementById("class-" + selected).style.display = "block";
+    }
+}
+
+// 🔍 SEARCH
+function searchStudent(){
+    let input = document.getElementById("searchInput").value.toLowerCase();
+    let rows = document.querySelectorAll("tbody tr");
+
+    rows.forEach(row=>{
+        let text = row.innerText.toLowerCase();
+        row.style.display = text.includes(input) ? "" : "none";
+    });
+}
+
+// 🔁 LOAD SAVED CLASS
+window.onload = function() {
+    let saved = localStorage.getItem("selectedClass");
+    if(saved){
+        document.getElementById("classFilter").value = saved;
+        filterClass();
+    }
+}
+
+// ✏️ OPEN EDIT
+function openEdit(roll, cls, name, phone, email, address){
+    document.getElementById("roll").value = roll;
+    document.getElementById("class").value = cls;
+    document.getElementById("name").value = name;
+    document.getElementById("phone").value = phone;
+    document.getElementById("email").value = email;
+    document.getElementById("address").value = address;
+
+    new bootstrap.Modal(document.getElementById('editModal')).show();
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+<!-- 🔥 HEADER -->
+<div class="text-center mb-4">
+    <h2 class="fw-bold text-primary">🎓 Student Report Card</h2>
+    <p class="text-muted">Academic Performance Overview</p>
+</div>
+
+<!-- 🔍 SEARCH -->
+<form method="GET" class="row g-2 mb-4">
+    <div class="col-md-5">
+        <input type="text" name="class" class="form-control form-control-lg shadow-sm"
+               placeholder="Enter Class">
+    </div>
+    <div class="col-md-5">
+        <input type="number" name="roll" class="form-control form-control-lg shadow-sm"
+               placeholder="Enter Roll No">
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary btn-lg w-100 shadow">
+            🔍 Search
+        </button>
+    </div>
+</form>
+
+{% if not data %}
+<div class="alert alert-info text-center shadow">
+    🔍 Please search student
+</div>
+{% endif %}
+
+{% if data %}
+
+<!-- 🏫 SCHOOL HEADER -->
+<div class="card shadow-lg border-0 mb-3 p-3 text-center bg-light">
+    <h4 class="fw-bold">🏫 Prince of Wales International School</h4>
+    <small class="text-muted">Session: 2025 - 26</small>
+</div>
+
+<!-- 👤 PROFILE CARD -->
+<div class="card shadow-lg border-0 mb-4 p-3">
+
+    <div class="row align-items-center">
+
+        <!-- PHOTO -->
+        <div class="col-md-3 text-center">
+            {% if data[0][7] %}
+            <img src="/uploads/{{data[0][7]}}"
+                 class="rounded-circle shadow"
+                 style="width:130px;height:130px;object-fit:cover;">
+            {% else %}
+            <img src="https://via.placeholder.com/130"
+                 class="rounded-circle">
+            {% endif %}
+        </div>
+
+        <!-- INFO -->
+        <div class="col-md-9">
+            <h4 class="fw-bold">{{data[0][2]}}</h4>
+            <p class="mb-1">Roll No: <b>{{data[0][1]}}</b></p>
+            <p class="mb-1">Class: <b>{{data[0][3]}}</b></p>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 📊 MARKS TABLE -->
+<div class="card shadow-lg border-0 p-3">
+
+<h5 class="mb-3 text-primary">📊 Subject Performance</h5>
+
+<table class="table table-hover text-center align-middle">
+
+<thead class="table-dark">
+<tr>
+<th>Subject</th>
+<th>Marks</th>
+<th>Max</th>
+<th>%</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for d in data %}
+<tr>
+<td class="fw-semibold">{{d[4]}}</td>
+<td>{{d[5]}}</td>
+<td>{{d[6]}}</td>
+
+<td>
+{% if d[5] and d[6] %}
+    {% set per = ((d[5]/d[6])*100) %}
+    <span class="badge 
+        {% if per >= 75 %} bg-success
+        {% elif per >= 40 %} bg-warning text-dark
+        {% else %} bg-danger
+        {% endif %}">
+        {{ per | round(2) }} %
+    </span>
+{% else %}
+-
+{% endif %}
+</td>
+
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+</div>
+
+<!-- 📈 SUMMARY CARDS -->
+<div class="row mt-4 g-3 text-center">
+
+<div class="col-md-3">
+<div class="card shadow p-3">
+<h6>Total Marks</h6>
+<h4>{{total}}</h4>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow p-3 bg-primary text-white">
+<h6>Percentage</h6>
+<h4>{{percentage}}%</h4>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow p-3 bg-info text-white">
+<h6>Grade</h6>
+<h4>{{grade}}</h4>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow p-3 bg-secondary text-white">
+<h6>Attendance</h6>
+<h4>{{attendance_percent}}%</h4>
+</div>
+</div>
+
+</div>
+
+<!-- RESULT -->
+<div class="text-center mt-4">
+
+{% if percentage < 40 %}
+<div class="alert alert-danger fw-bold shadow">
+❌ FAIL
+</div>
+{% else %}
+<div class="alert alert-success fw-bold shadow">
+✅ PASS
+</div>
+{% endif %}
+
+</div>
+
+<!-- 🔥 ACTION BUTTON -->
+<div class="text-center mt-3">
+<a href="/download_report/{{data[0][1]}}/{{data[0][3]}}"
+   class="btn btn-success btn-lg shadow">
+   📄 Download PDF
+</a>
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}
