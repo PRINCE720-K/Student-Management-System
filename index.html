@@ -1,63 +1,115 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Student Management System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
 <style>
-body{
+*{
     margin:0;
-    font-family:Arial;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
     background:linear-gradient(135deg,#6c5ce7,#00cec9);
     color:white;
 }
 
 .container{
-    max-width:1000px;
+    max-width:1100px;
     margin:auto;
-    padding:30px;
+    padding:20px;
 }
 
 .card{
-    background:rgba(255,255,255,0.1);
+    background:rgba(255,255,255,0.08);
     padding:25px;
     border-radius:20px;
-    backdrop-filter:blur(10px);
-    margin-bottom:20px;
+    backdrop-filter:blur(15px);
+    margin-bottom:25px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.2);
 }
 
-h1,h2{
+h1{
+    font-size:32px;
+}
+
+h2{
     margin-bottom:10px;
 }
 
 .btn{
     display:inline-block;
     padding:12px 20px;
-    border-radius:10px;
+    border-radius:12px;
     text-decoration:none;
     font-weight:bold;
-    margin-top:10px;
+    margin-top:15px;
+    margin-right:10px;
     transition:0.3s;
 }
 
 .btn-download{
     background:#00b894;
-    color:white;
 }
 
 .btn-github{
-    background:#2d3436;
-    color:white;
+    background:#3bb715;
 }
 
 .btn:hover{
-    transform:scale(1.05);
+    transform:translateY(-3px) scale(1.05);
 }
 
 ul{
     padding-left:20px;
+    line-height:1.8;
+}
+
+code{
+    display:block;
+    background:#00000050;
+    padding:10px;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+/* SLIDER */
+.slider{
+    text-align:center;
+}
+
+.slider img{
+    width:100%;
+    max-height:450px;
+    object-fit:contain;
+    border-radius:12px;
+    margin-top:15px;
+}
+
+.controls{
+    margin-top:15px;
+}
+
+.controls button{
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    margin:5px;
+    font-weight:bold;
+    cursor:pointer;
+    background:#ffffff30;
+    color:white;
+    transition:0.3s;
+}
+
+.controls button:hover{
+    background:#ffffff60;
 }
 
 .footer{
@@ -73,17 +125,16 @@ ul{
 <div class="container">
 
 <!-- HEADER -->
-
 <div class="card">
 <h1>🎓 Student Management System</h1>
 <p>A powerful desktop application to manage students, marks, attendance and reports.</p>
 
-<a href="https://github.com/PRINCE720-K/Student-Management-System/releases/download/Student/Student.Management.Setup.exe" class="btn btn-download">⬇ Download Setup (.exe)</a> <a href="https://github.com/PRINCE720-K/Student-Management-System/archive/refs/tags/Student.zip" class="btn btn-github">💻 View Source Code</a>
+<a href="https://github.com/PRINCE720-K/Student-Management-System/releases/download/Student/Student.Management.Setup.exe" target="_blank" class="btn btn-download">⬇ Download Setup</a>
 
+<a href="https://github.com/PRINCE720-K/Student-Management-System" target="_blank" class="btn btn-github">💻 View Source Code</a>
 </div>
 
 <!-- FEATURES -->
-
 <div class="card">
 <h2>🚀 Features</h2>
 <ul>
@@ -98,30 +149,24 @@ ul{
 </div>
 
 <!-- INSTALLATION -->
-
 <div class="card">
-<h2>📦 Installation (Inno Setup)</h2>
-
-<p>This application is packaged using <b>Inno Setup</b>.</p>
-
-<ol>
-<li>Download the setup file</li>
-<li>Run the installer</li>
-<li>Choose installation location</li>
-<li>Click Install</li>
-<li>Launch application</li>
-</ol>
+<h2>📦 Installation</h2>
+<ul >
+<li>Download setup</li>
+<li>Run installer</li>
+<li>Select location</li>
+<li>Click install</li>
+<li>Launch app</li>
+</ul>
 
 <p><b>Default Install Path:</b></p>
 <code>C:\Users\User\AppData\Roaming\StudentManagementSystem</code>
 
-<p><b>Data Storage Path:</b></p>
+<p><b>Data Path:</b></p>
 <code>C:\Users\Public\StudentManagementSystem</code>
-
 </div>
 
 <!-- TECH -->
-
 <div class="card">
 <h2>🧠 Technologies Used</h2>
 <ul>
@@ -134,15 +179,22 @@ ul{
 </ul>
 </div>
 
-<!-- SCREENSHOT -->
-
+<!-- SCREENSHOTS -->
 <div class="card">
 <h2>📸 Screenshots</h2>
-<p>Add your app screenshots here</p>
+
+<div class="slider">
+    <img id="slide" src="Screenshots/1.png">
+
+    <div class="controls">
+        <button onclick="prevSlide()">⬅ Prev</button>
+        <button onclick="nextSlide()">Next ➡</button>
+    </div>
+</div>
+
 </div>
 
 <!-- AUTHOR -->
-
 <div class="card">
 <h2>👨‍💻 Developer</h2>
 <p><b>Prince Kanojiya</b></p>
@@ -154,6 +206,63 @@ ul{
 </div>
 
 </div>
+
+<!-- SCRIPT -->
+<script>
+let images = [
+"Screenshots/1.png",
+"Screenshots/2.png",
+"Screenshots/3.png",
+"Screenshots/4.png",
+"Screenshots/5.png",
+"Screenshots/6.png",
+"Screenshots/7.png",
+"Screenshots/8.png",
+"Screenshots/9.png",
+"Screenshots/10.png",
+"Screenshots/11.png",
+"Screenshots/12.png",
+"Screenshots/13.png",
+"Screenshots/14.png",
+"Screenshots/15.png",
+"Screenshots/16.png"
+];
+
+let index = 0;
+let autoSlide;
+
+function showSlide(){
+    document.getElementById("slide").src = images[index];
+}
+
+function nextSlide(){
+    index++;
+    if(index >= images.length) index = 0;
+    showSlide();
+}
+
+function prevSlide(){
+    index--;
+    if(index < 0) index = images.length - 1;
+    showSlide();
+}
+
+function startAutoSlide(){
+    autoSlide = setInterval(nextSlide, 3000);
+}
+
+function stopAutoSlide(){
+    clearInterval(autoSlide);
+}
+
+startAutoSlide();
+
+// pause on hover
+let slider = document.querySelector(".slider");
+
+slider.addEventListener("mouseenter", stopAutoSlide);
+slider.addEventListener("mouseleave", startAutoSlide);
+</script>
 
 </body>
 </html>
